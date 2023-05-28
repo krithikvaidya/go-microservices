@@ -1,6 +1,6 @@
-## Introduction to Go
+## Microservices development in Go
 
-Labs and exercises to help you learn Go programming  and microservices development.
+Labs and exercises to help you learn Microservices development in Go.
 
 ## Prerequisites
 - Should have Go version 1.16 and above installed
