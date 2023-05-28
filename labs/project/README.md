@@ -11,9 +11,9 @@
 5. Implement the `CompleteTask` method.
 
 6. The program should: 
-  a. be able to create several tasks and store them in a slice. 
-  b. Call the `NewTask` method with the values to add it. You don't need to ask the user for input from the command line.
-  c. Use the Task index to mark the task as completed.
-  d. Finally, iterate over all the tasks and display their details. 
+    - be able to create several tasks and store them in a slice. 
+    - Call the `NewTask` method with the values to add it. You don't need to ask the user for input from the command line.
+    - Use the Task index to mark the task as completed.
+    - Finally, iterate over all the tasks and display their details. 
 
 7. Build and run the program
