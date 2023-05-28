@@ -6,7 +6,7 @@
 
 3. Define the `Task struct`: Below the package declaration, define a struct called Task with `name`, `description`, and `status` fields
 
-4. Implement the `NewTask` method, the function should create a new task and adds it to a slice of tasks.
+4. Implement the `NewTask` method, the function should create a new task.
 
 5. Implement the `CompleteTask` method.
 
