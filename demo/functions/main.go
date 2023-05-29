@@ -2,27 +2,23 @@ package main
 
 import "fmt"
 
-func swap(a, b int, name string) (int, int) {
-	return b, a
+func main() {
+	// functions as first citizen example
+	v := calc(2, 3, sum)
+	fmt.Println(v)
+
+	v = calc(2, 3, multiply)
+	fmt.Println(v)
 }
 
-func Write(b []byte) (numberOfBytes int, err error) {
-	return 0, nil
+func calc(a int, b int, f func(int, int) int) int {
+	return f(a, b)
+}
+
+func multiply(a, b int) int {
+	return a * b
 }
 
 func sum(a, b int) int {
 	return a + b
-}
-
-func print(msg string) {
-	fmt.Println(msg)
-}
-
-func main() {
-	defer releaseResources()
-	fmt.Println("testing defer statement")
-}
-
-func releaseResources() {
-	fmt.Println("closing and releasinng connections....")
 }
