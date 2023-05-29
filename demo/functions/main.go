@@ -11,7 +11,7 @@ func main() {
 	fmt.Println(v)
 }
 
-func calc(a int, b int, f func(int, int) int) int {
+func calc(a, b int, f func(int, int) int) int {
 	return f(a, b)
 }
 
