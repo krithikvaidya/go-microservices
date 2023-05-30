@@ -100,6 +100,30 @@ The names are not mandatory but they can make code shorter and clearer: they're 
 func nextInt(b []byte, pos int) (value, nextPos int)
 ```
 
+## 	Functions as first citizen example
+
+```go
+func main() {
+	v := calc(2, 3, sum)
+	fmt.Println(v)
+
+	v = calc(2, 3, multiply)
+	fmt.Println(v)
+}
+
+func calc(a, b int, f func(int, int) int) int {
+	return f(a, b)
+}
+
+func multiply(a, b int) int {
+	return a * b
+}
+
+func sum(a, b int) int {
+	return a + b
+}
+```
+
 ## Defer
 Go's defer statement schedules a function call (the deferred function) to be run immediately before the function executing the defer returns. It's an unusual but effective way to deal with situations such as resources that must be released regardless of which path a function takes to return. The canonical examples are unlocking a mutex or closing a file. 
 
