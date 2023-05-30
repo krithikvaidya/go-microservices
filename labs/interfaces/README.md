@@ -8,6 +8,57 @@ Go supports Duck Typing. "If it walks like a duck and it quacks like a duck, the
 
 Duck typing is a concept related to dynamic typing, where the type or the class of an object is less important than the methods it defines. When you use duck typing, you do not check types at all. Instead, you check for the presence of a given method or attribute.
 
+
+## Example 1:
+
+Lets say we have an interface A and we want to implement it to struct B
+
+```go
+type A interface {
+  foo() int64
+}
+
+type B struct {
+  num int64
+}
+```
+
+Go supports duck typing. So to make B implement A we have to make B look like A. 
+That means, if you define a receiver function foo() on B, it will look like A.
+
+```go
+func (b B) foo() int64 {
+  return 10
+}
+
+func main() {
+  var v A = B{2} // Here B implements interface A?
+  fmt.Println(v.foo())
+}
+```
+
+You can also have another struct C
+
+```go
+type C struct {
+}
+
+// and now C also implements A
+func (c C) foo() int64 {
+  return 20
+}
+
+func main() {
+  var v A = B{2} // Here B implements interface A?
+  fmt.Println(v.foo())
+  v = C{}
+  fmt.Println(v.foo())
+}
+```
+
+
+## Example 2:
+
 ```go
 package main
 
