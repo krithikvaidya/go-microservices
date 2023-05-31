@@ -50,7 +50,10 @@ func GetCustomers(w http.ResponseWriter, r *http.Request) {
 }
 
 func Greet(w http.ResponseWriter, r *http.Request) {
-	msg := fmt.Sprintf("{ \"msg\": \"%s\"}", "Hello World!!")
+
+	id := r.URL.Query().Get("id")
+
+	msg := fmt.Sprintf("{ \"msg\": \"ID is: %s\"}", id)
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(201)
