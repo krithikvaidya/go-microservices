@@ -4,12 +4,18 @@ import (
 	"learning-http/handlers"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func Start() {
-	http.HandleFunc("/greet", handlers.Greet)
-	http.HandleFunc("/customers", handlers.GetCustomers)
 
-	log.Println("starting server 1....")
-	log.Fatal(http.ListenAndServe("localhost:8080", nil))
+	r := mux.NewRouter()
+
+	r.HandleFunc("/greet", handlers.Greet)
+	r.HandleFunc("/customers", handlers.GetCustomers).Methods(http.MethodGet)
+	r.HandleFunc("/customers", handlers.NewCustomer).Methods(http.MethodPost)
+
+	log.Println("starting server ....")
+	log.Fatal(http.ListenAndServe("localhost:8080", r))
 }

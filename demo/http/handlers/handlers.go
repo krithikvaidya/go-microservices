@@ -14,13 +14,17 @@ type Customer struct {
 	Zipcode string `json:"-" xml:"zip"`
 }
 
+func NewCustomer(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(201)
+	w.Write([]byte("New customer added"))
+}
+
 func GetCustomers(w http.ResponseWriter, r *http.Request) {
 	customers := []Customer{
 		{"1", "Abhay", "Blr", "123456"},
 		{"2", "Ashish", "", "110011"},
 		{"3", "Rob", "Mum", "220011"},
 	}
-
 	if r.Header.Get("Content-Type") == "application/xml" {
 		w.Header().Add("Content-Type", "application/xml")
 		xml.NewEncoder(w).Encode(customers)
