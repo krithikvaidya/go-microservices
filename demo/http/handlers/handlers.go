@@ -5,6 +5,8 @@ import (
 	"encoding/xml"
 	"fmt"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 type Customer struct {
@@ -17,6 +19,15 @@ type Customer struct {
 func NewCustomer(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(201)
 	w.Write([]byte("New customer added"))
+}
+
+// localhost:8080/customers/123
+// localhost:8080/customers/abc -> error/404
+
+func GetCustomer(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	customerId := vars["customer_id"]
+	w.Write([]byte(customerId))
 }
 
 func GetCustomers(w http.ResponseWriter, r *http.Request) {
