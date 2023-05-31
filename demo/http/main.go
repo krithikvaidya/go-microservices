@@ -8,10 +8,20 @@ import (
 )
 
 type Customer struct {
-	Id      string
-	Name    string
-	City    string
-	Zipcode string
+	Id      string `json:"id"`
+	Name    string `json:"full_name"`
+	City    string `json:"city,omitempty"`
+	Zipcode string `json:"-"`
+}
+
+func getCustomers(w http.ResponseWriter, r *http.Request) {
+	customers := []Customer{
+		{"1", "Abhay", "Blr", "123456"},
+		{"2", "Ashish", "", "110011"},
+		{"3", "Rob", "Mum", "220011"},
+	}
+	w.Header().Add("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(customers)
 }
 
 func main() {
@@ -28,14 +38,4 @@ func greet(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(201)
 	w.Write([]byte(msg))
-}
-
-func getCustomers(w http.ResponseWriter, r *http.Request) {
-	customers := []Customer{
-		{"1", "Abhay", "Blr", "123456"},
-		{"2", "Ashish", "Del", "110011"},
-		{"3", "Rob", "Mum", "220011"},
-	}
-	w.Header().Add("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(customers)
 }
