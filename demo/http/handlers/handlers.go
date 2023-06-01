@@ -1,11 +1,10 @@
 package handlers
 
 import (
-	"encoding/json"
-	"encoding/xml"
 	"fmt"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/gorilla/mux"
 )
 
@@ -30,23 +29,24 @@ func GetCustomer(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(customerId))
 }
 
-func GetCustomers(w http.ResponseWriter, r *http.Request) {
+func GetCustomers(c *gin.Context) {
 	customers := []Customer{
 		{"1", "Abhay", "Blr", "123456"},
 		{"2", "Ashish", "", "110011"},
 		{"3", "Rob", "Mum", "220011"},
 	}
-	if r.Header.Get("Content-Type") == "application/xml" {
-		w.Header().Add("Content-Type", "application/xml")
-		xml.NewEncoder(w).Encode(customers)
-	}
-	if r.Header.Get("Content-Type") == "application/json" {
-		w.Header().Add("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(customers)
-	}
-	if r.Header.Get("Content-Type") == "" {
-		w.WriteHeader(404)
-	}
+	c.JSON(http.StatusOK, customers)
+	// if r.Header.Get("Content-Type") == "application/xml" {
+	// 	w.Header().Add("Content-Type", "application/xml")
+	// 	xml.NewEncoder(w).Encode(customers)
+	// }
+	// if r.Header.Get("Content-Type") == "application/json" {
+	// 	w.Header().Add("Content-Type", "application/json")
+	// 	json.NewEncoder(w).Encode(customers)
+	// }
+	// if r.Header.Get("Content-Type") == "" {
+	// 	w.WriteHeader(404)
+	// }
 }
 
 func Greet(w http.ResponseWriter, r *http.Request) {
