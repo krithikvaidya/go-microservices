@@ -2,6 +2,7 @@ package app
 
 import (
 	"learning-http/handlers"
+	"learning-http/service"
 	"log"
 	"net/http"
 
@@ -11,8 +12,13 @@ import (
 func Start() {
 
 	r := mux.NewRouter()
+	svc := service.NewCustomerService()
 
-	r.HandleFunc("/customers", handlers.CustomerHandler).Methods(http.MethodGet)
+	// application wiring
+	ch := handlers.NewCustomerHandler(svc)
+
+	r.HandleFunc("/customers", ch.CustomersHandler).Methods(http.MethodGet)
+	r.HandleFunc("/customers/{customer_id}", ch.CustomerHandler).Methods(http.MethodGet)
 
 	log.Println("starting server ....")
 	log.Fatal(http.ListenAndServe("localhost:8080", r))

@@ -2,12 +2,12 @@ package service
 
 import "learning-http/domain"
 
-type CustomerService struct{}
+type CustomerService struct {
+	repo domain.CustomerRepositoryDb
+}
 
 func (c *CustomerService) GetAllCustomers() ([]domain.Customer, error) {
-	// repo := domain.NewStubCustomerRepository()
-	repo := domain.NewCustomerRepositoryDb()
-	customers, err := repo.FindAll()
+	customers, err := c.repo.FindAll()
 	if err != nil {
 		return nil, err
 	}
@@ -21,6 +21,11 @@ func (c *CustomerService) GetAllCustomers() ([]domain.Customer, error) {
 	return customers, err
 }
 
+func (c *CustomerService) GetCustomer(id string) (*domain.Customer, error) {
+	return c.repo.ById(id)
+}
+
 func NewCustomerService() CustomerService {
-	return CustomerService{}
+	repo := domain.NewCustomerRepositoryDb()
+	return CustomerService{repo}
 }
