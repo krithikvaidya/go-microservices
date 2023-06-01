@@ -12,10 +12,7 @@ func Start() {
 
 	r := mux.NewRouter()
 
-	r.HandleFunc("/greet", handlers.Greet)
-	r.HandleFunc("/customers", handlers.GetCustomers).Methods(http.MethodGet)
-	r.HandleFunc("/customers/{customer_id:[0-9]+}", handlers.GetCustomer).Methods(http.MethodGet)
-	r.HandleFunc("/customers", handlers.NewCustomer).Methods(http.MethodPost)
+	r.HandleFunc("/customers", handlers.CustomerHandler).Methods(http.MethodGet)
 
 	log.Println("starting server ....")
 	log.Fatal(http.ListenAndServe("localhost:8080", r))
