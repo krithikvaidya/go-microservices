@@ -6,6 +6,7 @@ import (
 	"learning-http/logger"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 )
 
 type CustomerRepository interface {
@@ -14,55 +15,38 @@ type CustomerRepository interface {
 }
 
 type CustomerRepositoryDb struct {
-	db *sql.DB
+	db *sqlx.DB
 }
 
 func (cr *CustomerRepositoryDb) FindAll() ([]Customer, *errs.AppError) {
+	customers := make([]Customer, 0)
 	selectSQL := "SELECT customer_id, name, date_of_birth, city, zipcode, status from customers"
-	rows, err := cr.db.Query(selectSQL)
-	if err != nil {
+
+	if err := cr.db.Select(&customers, selectSQL); err != nil {
 		logger.Error("Error while querying customer table: " + err.Error())
 		return nil, errs.NewUnexpectedError(err.Error())
-	}
-	customers := make([]Customer, 0)
-
-	for rows.Next() {
-		c := Customer{}
-		err = rows.Scan(&c.Id, &c.Name, &c.DateOfBirth, &c.City, &c.Zipcode, &c.Status)
-		if err != nil {
-			logger.Error("Error while scanning customer data: " + err.Error())
-			return nil, errs.NewUnexpectedError(err.Error())
-		}
-		customers = append(customers, c)
 	}
 	return customers, nil
 }
 
 func (cr *CustomerRepositoryDb) ById(id string) (*Customer, *errs.AppError) {
-	selectSQL := "SELECT customer_id, name, date_of_birth, city, zipcode, status from customers where customer_id = ?"
-	row := cr.db.QueryRow(selectSQL, id)
-
-	if row.Err() != nil {
-		logger.Error("Error while querying customer table: " + row.Err().Error())
-		return nil, errs.NewUnexpectedError(row.Err().Error())
-	}
-
 	c := Customer{}
-	err := row.Scan(&c.Id, &c.Name, &c.DateOfBirth, &c.City, &c.Zipcode, &c.Status)
+	selectSQL := "SELECT customer_id, name, date_of_birth, city, zipcode, status from customers where customer_id = ?"
+	err := cr.db.Get(&c, selectSQL, id)
 
 	// https://stackoverflow.com/a/60123886
-	if err == sql.ErrNoRows {
-		logger.Info("No rows found")
-		return nil, errs.NewNotFoundError("Customer not found")
-	}
 	if err != nil {
-		logger.Error("Error while scanning customer data: " + err.Error())
-		return nil, errs.NewUnexpectedError(err.Error())
+		if err == sql.ErrNoRows {
+			logger.Info("No rows found")
+			return nil, errs.NewNotFoundError("Customer not found")
+		} else {
+			logger.Error("Error while querying customer table: " + err.Error())
+			return nil, errs.NewUnexpectedError(err.Error())
+		}
 	}
-
 	return &c, nil
 }
 
-func NewCustomerRepositoryDb(dbConn *sql.DB) CustomerRepositoryDb {
+func NewCustomerRepositoryDb(dbConn *sqlx.DB) CustomerRepositoryDb {
 	return CustomerRepositoryDb{db: dbConn}
 }

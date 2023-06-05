@@ -1,7 +1,6 @@
 package app
 
 import (
-	"database/sql"
 	"learning-http/domain"
 	"learning-http/handlers"
 	"learning-http/logger"
@@ -11,6 +10,7 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/jmoiron/sqlx"
 )
 
 func Start() {
@@ -34,8 +34,8 @@ func Start() {
 	log.Fatal(http.ListenAndServe("localhost:8080", r))
 }
 
-func getDbClient() *sql.DB {
-	db, err := sql.Open("mysql", "root:student@tcp(localhost:3307)/banking")
+func getDbClient() *sqlx.DB {
+	db, err := sqlx.Open("mysql", "root:student@tcp(localhost:3307)/banking")
 	if err != nil {
 		panic(err)
 	}
