@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"log"
-	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -59,18 +58,6 @@ func (cr *CustomerRepositoryDb) ById(id string) (*Customer, error) {
 	return &c, nil
 }
 
-func getDbClient() *sql.DB {
-	db, err := sql.Open("mysql", "root:student@tcp(localhost:3307)/banking")
-	if err != nil {
-		panic(err)
-	}
-	// See "Important settings" section.
-	db.SetConnMaxLifetime(time.Minute * 3)
-	db.SetMaxOpenConns(10)
-	db.SetMaxIdleConns(10)
-	return db
-}
-
-func NewCustomerRepositoryDb() CustomerRepositoryDb {
-	return CustomerRepositoryDb{db: getDbClient()}
+func NewCustomerRepositoryDb(dbConn *sql.DB) CustomerRepositoryDb {
+	return CustomerRepositoryDb{db: dbConn}
 }

@@ -25,7 +25,7 @@ func (c *CustomerService) GetCustomer(id string) (*domain.Customer, error) {
 	return c.repo.ById(id)
 }
 
-func NewCustomerService() CustomerService {
-	repo := domain.NewCustomerRepositoryDb()
+func NewCustomerService(repo domain.CustomerRepositoryDb) CustomerService {
+	// repo := domain.NewCustomerRepositoryDb()
 	return CustomerService{repo}
 }
