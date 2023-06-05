@@ -8,6 +8,11 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+type CustomerRepository interface {
+	FindAll() ([]Customer, error)
+	ById(id string) (*Customer, error)
+}
+
 type CustomerRepositoryDb struct {
 	db *sql.DB
 }

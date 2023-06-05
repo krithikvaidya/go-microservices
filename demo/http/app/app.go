@@ -18,9 +18,10 @@ func Start() {
 
 	// application wiring
 	dbConn := getDbClient()
-
 	customerRepo := domain.NewCustomerRepositoryDb(dbConn)
-	svc := service.NewCustomerService(customerRepo)
+	// stubRepo := domain.NewStubCustomerRepository()
+
+	svc := service.NewCustomerService(&customerRepo)
 	ch := handlers.NewCustomerHandler(svc)
 
 	r.HandleFunc("/customers", ch.CustomersHandler).Methods(http.MethodGet)

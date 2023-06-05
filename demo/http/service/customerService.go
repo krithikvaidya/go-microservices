@@ -3,7 +3,7 @@ package service
 import "learning-http/domain"
 
 type CustomerService struct {
-	repo domain.CustomerRepositoryDb
+	repo domain.CustomerRepository
 }
 
 func (c *CustomerService) GetAllCustomers() ([]domain.Customer, error) {
@@ -25,7 +25,7 @@ func (c *CustomerService) GetCustomer(id string) (*domain.Customer, error) {
 	return c.repo.ById(id)
 }
 
-func NewCustomerService(repo domain.CustomerRepositoryDb) CustomerService {
+func NewCustomerService(repo domain.CustomerRepository) CustomerService {
 	// repo := domain.NewCustomerRepositoryDb()
 	return CustomerService{repo}
 }
