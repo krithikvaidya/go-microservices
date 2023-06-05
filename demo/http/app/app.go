@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"learning-http/domain"
 	"learning-http/handlers"
+	"learning-http/logger"
 	"learning-http/service"
 	"log"
 	"net/http"
@@ -27,7 +28,9 @@ func Start() {
 	r.HandleFunc("/customers", ch.CustomersHandler).Methods(http.MethodGet)
 	r.HandleFunc("/customers/{customer_id}", ch.CustomerHandler).Methods(http.MethodGet)
 
-	log.Println("starting server ....")
+	// log.Println("starting server ....")
+	logger.Info("starting server ....")
+
 	log.Fatal(http.ListenAndServe("localhost:8080", r))
 }
 
