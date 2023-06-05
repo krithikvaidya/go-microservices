@@ -1,13 +1,16 @@
 package logger
 
 import (
+	"log"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
-var log *zap.Logger
+var zapLog *zap.Logger
 
 func init() {
+
 	var err error
 	zap.NewProduction()
 	config := zap.NewProductionConfig()
@@ -19,24 +22,24 @@ func init() {
 
 	config.EncoderConfig = encoderConfig
 
-	log, err = config.Build(zap.AddCallerSkip(1))
+	zapLog, err = config.Build(zap.AddCallerSkip(1))
 	if err != nil {
 		log.Fatal("Not able to initialize logger....")
 	}
 }
 
 func Info(msg string, fields ...zapcore.Field) {
-	log.Info(msg, fields...)
+	zapLog.Info(msg, fields...)
 }
 
 func Debug(msg string, fields ...zapcore.Field) {
-	log.Debug(msg, fields...)
+	zapLog.Debug(msg, fields...)
 }
 
 func Fatal(msg string, fields ...zapcore.Field) {
-	log.Fatal(msg, fields...)
+	zapLog.Fatal(msg, fields...)
 }
 
 func Error(msg string, fields ...zapcore.Field) {
-	log.Error(msg, fields...)
+	zapLog.Error(msg, fields...)
 }
