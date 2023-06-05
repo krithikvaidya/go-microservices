@@ -1,12 +1,15 @@
 package service
 
-import "learning-http/domain"
+import (
+	"learning-http/domain"
+	"learning-http/errs"
+)
 
 type CustomerService struct {
 	repo domain.CustomerRepository
 }
 
-func (c *CustomerService) GetAllCustomers() ([]domain.Customer, error) {
+func (c *CustomerService) GetAllCustomers() ([]domain.Customer, *errs.AppError) {
 	customers, err := c.repo.FindAll()
 	if err != nil {
 		return nil, err
@@ -21,7 +24,7 @@ func (c *CustomerService) GetAllCustomers() ([]domain.Customer, error) {
 	return customers, err
 }
 
-func (c *CustomerService) GetCustomer(id string) (*domain.Customer, error) {
+func (c *CustomerService) GetCustomer(id string) (*domain.Customer, *errs.AppError) {
 	return c.repo.ById(id)
 }
 

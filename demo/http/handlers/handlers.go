@@ -18,11 +18,9 @@ func (ch *CustomerHandlers) CustomersHandler(w http.ResponseWriter, r *http.Requ
 	customers, err := ch.service.GetAllCustomers()
 	if err != nil {
 		// we have some error here
-		w.WriteHeader(404)
-		w.Write([]byte(err.Error()))
+		writeResponse(w, err.Code, err)
 	} else {
-		w.Header().Add("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(customers)
+		writeResponse(w, http.StatusOK, customers)
 	}
 }
 
@@ -35,14 +33,18 @@ func (ch *CustomerHandlers) CustomerHandler(w http.ResponseWriter, r *http.Reque
 	customer, err := ch.service.GetCustomer(id)
 	if err != nil {
 		// we have some error here
-		w.WriteHeader(404)
-		w.Write([]byte(err.Error()))
+		writeResponse(w, err.Code, err)
 	} else {
-		w.Header().Add("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(customer)
+		writeResponse(w, http.StatusOK, customer)
 	}
 }
 
 func NewCustomerHandler(svc service.CustomerService) CustomerHandlers {
 	return CustomerHandlers{svc}
+}
+
+func writeResponse(w http.ResponseWriter, code int, data any) {
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(code)
+	json.NewEncoder(w).Encode(data)
 }

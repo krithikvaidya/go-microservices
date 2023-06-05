@@ -2,27 +2,27 @@ package domain
 
 import (
 	"database/sql"
-	"errors"
+	"learning-http/errs"
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 type CustomerRepository interface {
-	FindAll() ([]Customer, error)
-	ById(id string) (*Customer, error)
+	FindAll() ([]Customer, *errs.AppError)
+	ById(id string) (*Customer, *errs.AppError)
 }
 
 type CustomerRepositoryDb struct {
 	db *sql.DB
 }
 
-func (cr *CustomerRepositoryDb) FindAll() ([]Customer, error) {
+func (cr *CustomerRepositoryDb) FindAll() ([]Customer, *errs.AppError) {
 	selectSQL := "SELECT customer_id, name, date_of_birth, city, zipcode, status from customers"
 	rows, err := cr.db.Query(selectSQL)
 	if err != nil {
 		log.Println("Error while querying customer table: ", err.Error())
-		return nil, err
+		return nil, errs.NewUnexpectedError(err.Error())
 	}
 	customers := make([]Customer, 0)
 
@@ -31,20 +31,20 @@ func (cr *CustomerRepositoryDb) FindAll() ([]Customer, error) {
 		err = rows.Scan(&c.Id, &c.Name, &c.DateOfBirth, &c.City, &c.Zipcode, &c.Status)
 		if err != nil {
 			log.Println("Error while scanning customer data: ", err.Error())
-			return nil, err
+			return nil, errs.NewUnexpectedError(err.Error())
 		}
 		customers = append(customers, c)
 	}
 	return customers, nil
 }
 
-func (cr *CustomerRepositoryDb) ById(id string) (*Customer, error) {
+func (cr *CustomerRepositoryDb) ById(id string) (*Customer, *errs.AppError) {
 	selectSQL := "SELECT customer_id, name, date_of_birth, city, zipcode, status from customers where customer_id = ?"
 	row := cr.db.QueryRow(selectSQL, id)
 
 	if row.Err() != nil {
 		log.Println("Error while querying customer table: ", row.Err())
-		return nil, row.Err()
+		return nil, errs.NewUnexpectedError(row.Err().Error())
 	}
 
 	c := Customer{}
@@ -53,11 +53,11 @@ func (cr *CustomerRepositoryDb) ById(id string) (*Customer, error) {
 	// https://stackoverflow.com/a/60123886
 	if err == sql.ErrNoRows {
 		log.Println("No rows found...", row.Err())
-		return nil, errors.New("Customer not found")
+		return nil, errs.NewNotFoundError("Customer not found")
 	}
 	if err != nil {
 		log.Println("Error while scanning customer data: ", err.Error())
-		return nil, err
+		return nil, errs.NewUnexpectedError(err.Error())
 	}
 
 	return &c, nil
