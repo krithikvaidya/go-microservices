@@ -28,8 +28,34 @@ func (ah *AuthHandler) loginHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// http://authserver:8082/auth/verify?token=jwt-token
+/*
+	{ // good response
+		"isAuthorized": true,
+	}
+	{ // bad response
+		"isAuthorized": false,
+		"msg": "reason here"
+	}
+*/
 func (ah *AuthHandler) verifyHandler(w http.ResponseWriter, r *http.Request) {
-	// TODO
+	token := r.URL.Query().Get("token")
+
+	if token != "" {
+		appErr := ah.service.Verify(token)
+		if appErr != nil {
+			writeResponse(w, appErr.Code, notAuthorized(appErr.Message))
+		} else {
+			// good case
+			writeResponse(w, http.StatusOK, map[string]any{"isAuthorized": true})
+		}
+	} else {
+		writeResponse(w, http.StatusForbidden, notAuthorized("token missing"))
+	}
+}
+
+func notAuthorized(msg string) map[string]any {
+	return map[string]any{"isAuthorized": false, "msg": msg}
 }
 
 func writeResponse(w http.ResponseWriter, code int, data any) {

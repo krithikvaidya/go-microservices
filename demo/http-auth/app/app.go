@@ -21,8 +21,8 @@ func Start() {
 	svc := service.NewLoginService(repo)
 	ah := AuthHandler{svc}
 
-	r.HandleFunc("/login", ah.loginHandler).Methods(http.MethodPost)
-	r.HandleFunc("/verify", ah.verifyHandler).Methods(http.MethodPost)
+	r.HandleFunc("/auth/login", ah.loginHandler).Methods(http.MethodPost)
+	r.HandleFunc("/auth/verify", ah.verifyHandler).Methods(http.MethodGet)
 
 	logger.Info("starting auth server ....")
 
