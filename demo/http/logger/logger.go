@@ -12,7 +12,7 @@ var zapLog *zap.Logger
 func init() {
 
 	var err error
-	zap.NewProduction()
+
 	config := zap.NewProductionConfig()
 
 	encoderConfig := zap.NewProductionEncoderConfig()
