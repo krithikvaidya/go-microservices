@@ -1,7 +1,9 @@
 package domain
 
 import (
+	"database/sql"
 	"learning-http-auth/errs"
+	"learning-http-auth/logger"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
@@ -12,7 +14,17 @@ type AuthRepositoryDb struct {
 }
 
 func (d AuthRepositoryDb) FindBy(username, password string) *errs.AppError {
-	// TODO
+	var login string
+	sqlVerify := `SELECT username FROM users u WHERE username = ? and password = ?`
+	err := d.db.Get(&login, sqlVerify, username, password)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return errs.NewAuthenticationError("invalid credentials")
+		} else {
+			logger.Error("Error while verifying login request from database: " + err.Error())
+			return errs.NewUnexpectedError("Unexpected database error")
+		}
+	}
 	return nil
 }
 
