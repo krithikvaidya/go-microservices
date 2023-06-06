@@ -11,7 +11,11 @@ type AuthHandler struct {
 }
 
 func (ah *AuthHandler) loginHandler(w http.ResponseWriter, r *http.Request) {
+	// TODO
+}
 
+func (ah *AuthHandler) verifyHandler(w http.ResponseWriter, r *http.Request) {
+	// TODO
 }
 
 func writeResponse(w http.ResponseWriter, code int, data any) {

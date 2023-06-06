@@ -22,6 +22,7 @@ func Start() {
 	ah := AuthHandler{svc}
 
 	r.HandleFunc("/login", ah.loginHandler).Methods(http.MethodPost)
+	r.HandleFunc("/verify", ah.verifyHandler).Methods(http.MethodPost)
 
 	logger.Info("starting auth server ....")
 

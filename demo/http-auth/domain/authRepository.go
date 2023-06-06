@@ -12,6 +12,7 @@ type AuthRepositoryDb struct {
 }
 
 func (d AuthRepositoryDb) FindBy(username, password string) *errs.AppError {
+	// TODO
 	return nil
 }
 
