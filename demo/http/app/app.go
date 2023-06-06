@@ -32,10 +32,27 @@ func Start() {
 	r.HandleFunc("/customers", ch.CustomersHandler).Methods(http.MethodGet)
 	r.HandleFunc("/customers/{customer_id}", ch.CustomerHandler).Methods(http.MethodGet)
 
-	// log.Println("starting server ....")
+	r.Use(authMiddleware)
+	r.Use(loggingMiddleware)
+
 	logger.Info("starting server ....")
 
 	log.Fatal(http.ListenAndServe("localhost:8080", r))
+}
+
+func loggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		t1 := time.Now()
+		next.ServeHTTP(w, r)
+		logger.Info(fmt.Sprintf("Incoming request %s took %v time", r.URL.Path, time.Since(t1)))
+	})
+}
+
+func authMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		logger.Info("doing some auth stuff")
+		next.ServeHTTP(w, r)
+	})
 }
 
 func sanityCheck() {
