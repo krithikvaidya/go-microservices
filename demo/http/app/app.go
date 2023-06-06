@@ -1,12 +1,14 @@
 package app
 
 import (
+	"fmt"
 	"learning-http/domain"
 	"learning-http/handlers"
 	"learning-http/logger"
 	"learning-http/service"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -14,6 +16,8 @@ import (
 )
 
 func Start() {
+
+	sanityCheck()
 
 	r := mux.NewRouter()
 
@@ -34,8 +38,25 @@ func Start() {
 	log.Fatal(http.ListenAndServe("localhost:8080", r))
 }
 
+func sanityCheck() {
+	envs := []string{"DB_USER", "DB_PASSWORD", "DB_HOST", "DB_PORT", "DB_NAME"}
+	for _, e := range envs {
+		if os.Getenv(e) == "" {
+			log.Fatalf("%s environment varaible missing, terminating application\n", e)
+		}
+	}
+}
+
 func getDbClient() *sqlx.DB {
-	db, err := sqlx.Open("mysql", "root:student@tcp(localhost:3307)/banking")
+	dbUser := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbName := os.Getenv("DB_NAME")
+
+	dataSource := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPassword, dbHost, dbPort, dbName)
+
+	db, err := sqlx.Open("mysql", dataSource)
 	if err != nil {
 		panic(err)
 	}
