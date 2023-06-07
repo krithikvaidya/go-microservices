@@ -28,11 +28,12 @@ func Start() {
 
 	svc := service.NewCustomerService(&customerRepo)
 	ch := handlers.NewCustomerHandler(svc)
+	am := handlers.NewAuthMiddleware()
 
 	r.HandleFunc("/customers", ch.CustomersHandler).Methods(http.MethodGet)
 	r.HandleFunc("/customers/{customer_id}", ch.CustomerHandler).Methods(http.MethodGet)
 
-	r.Use(authMiddleware)
+	r.Use(am.AuthMiddlewareHandler)
 	r.Use(loggingMiddleware)
 
 	logger.Info("starting server ....")
@@ -45,13 +46,6 @@ func loggingMiddleware(next http.Handler) http.Handler {
 		t1 := time.Now()
 		next.ServeHTTP(w, r)
 		logger.Info(fmt.Sprintf("Incoming request %s took %v time", r.URL.Path, time.Since(t1)))
-	})
-}
-
-func authMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		logger.Info("doing some auth stuff")
-		next.ServeHTTP(w, r)
 	})
 }
 
