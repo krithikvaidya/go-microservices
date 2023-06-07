@@ -1,6 +1,6 @@
 FROM golang:1.20.5-alpine3.17 AS builder
 
-WORKDIR /go/http-api
+WORKDIR /go/http-auth-api
 COPY ./ .
 RUN go mod download 
 
@@ -16,7 +16,7 @@ ENV DB_USER="root" \
   DB_NAME="banking" 
 
 EXPOSE 8080
-CMD ["/app/server"]
+CMD ["/app/auth-server"]
 
 WORKDIR /app
 COPY --from=builder /auth-server .
