@@ -42,7 +42,7 @@ func Start() {
 
 	logger.Info("starting server ....")
 
-	log.Fatal(http.ListenAndServe("localhost:8080", r))
+	log.Fatal(http.ListenAndServe(":8080", r))
 }
 
 func loggingMiddleware(next http.Handler) http.Handler {
