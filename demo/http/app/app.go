@@ -24,16 +24,20 @@ func Start() {
 	// application wiring
 	dbConn := getDbClient()
 	customerRepo := domain.NewCustomerRepositoryDb(dbConn)
+	authRepo := domain.NewAuthRepository()
 	// stubRepo := domain.NewStubCustomerRepository()
 
 	svc := service.NewCustomerService(&customerRepo)
 	ch := handlers.NewCustomerHandler(svc)
-	am := handlers.NewAuthMiddleware()
+	am := handlers.NewAuthMiddleware(authRepo)
 
 	r.HandleFunc("/customers", ch.CustomersHandler).Methods(http.MethodGet)
 	r.HandleFunc("/customers/{customer_id}", ch.CustomerHandler).Methods(http.MethodGet)
 
-	r.Use(am.AuthMiddlewareHandler)
+	if os.Getenv("AUTH_ENABLED") == "true" {
+		r.Use(am.AuthMiddlewareHandler)
+	}
+
 	r.Use(loggingMiddleware)
 
 	logger.Info("starting server ....")
@@ -50,7 +54,7 @@ func loggingMiddleware(next http.Handler) http.Handler {
 }
 
 func sanityCheck() {
-	envs := []string{"DB_USER", "DB_PASSWORD", "DB_HOST", "DB_PORT", "DB_NAME"}
+	envs := []string{"DB_USER", "DB_PASSWORD", "DB_HOST", "DB_PORT", "DB_NAME", "AUTH_SERVER"}
 	for _, e := range envs {
 		if os.Getenv(e) == "" {
 			log.Fatalf("%s environment varaible missing, terminating application\n", e)

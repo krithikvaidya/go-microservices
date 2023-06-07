@@ -1,14 +1,18 @@
 package handlers
 
 import (
-	"fmt"
+	"learning-http/domain"
 	"net/http"
 	"strings"
 )
 
-type AuthMiddleware struct{}
+type AuthMiddleware struct {
+	repo domain.AuthRepository
+}
 
-func (ah *AuthMiddleware) AuthMiddlewareHandler(next http.Handler) http.Handler {
+// RBAC -> role based access control
+
+func (am *AuthMiddleware) AuthMiddlewareHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		// retrieve the token from the request header
@@ -23,9 +27,13 @@ func (ah *AuthMiddleware) AuthMiddlewareHandler(next http.Handler) http.Handler 
 		} else {
 
 			// make the request to /auth/verify?token=some-jwt-token
+			isAuthorized := am.repo.IsAuthorized(token)
+			if isAuthorized {
+				next.ServeHTTP(w, r)
+			} else {
+				writeResponse(w, http.StatusUnauthorized, "Unauthorized")
+			}
 
-			fmt.Println(token)
-			next.ServeHTTP(w, r)
 		}
 	})
 }
@@ -38,6 +46,6 @@ func getTokenFromHeader(authHeader string) string {
 	return strings.TrimSpace(splitToken[1])
 }
 
-func NewAuthMiddleware() AuthMiddleware {
-	return AuthMiddleware{}
+func NewAuthMiddleware(repo domain.AuthRepository) AuthMiddleware {
+	return AuthMiddleware{repo}
 }
