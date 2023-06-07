@@ -3,8 +3,8 @@ package app
 import (
 	"encoding/json"
 	"learning-http-auth/domain"
+	"learning-http-auth/logger"
 	"learning-http-auth/service"
-	"learning-http/logger"
 	"net/http"
 )
 
