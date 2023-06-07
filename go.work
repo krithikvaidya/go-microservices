@@ -3,4 +3,5 @@ go 1.20
 use (
 	./demo/http
 	./demo/http-auth
+	./demo/terraform-lambda-golang/lambda-go
 )
