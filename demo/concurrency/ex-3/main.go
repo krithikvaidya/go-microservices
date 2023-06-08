@@ -3,12 +3,35 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"runtime"
 	"time"
 )
 
 func main() {
 	var max int = 10e7
-	calculateSumOfNumbers(max)
+	// calculateSumOfNumbers(max)
+	calculateConcurrently(max)
+}
+
+func calculateConcurrently(max int) {
+	s := GenerateNumbers(max)
+	t := time.Now()
+	ch := make(chan int64)
+	numCpu := runtime.NumCPU()
+
+	sizeOfParts := max / numCpu
+	for i := 0; i < numCpu; i++ {
+		start := i * sizeOfParts
+		end := start + sizeOfParts
+
+		part := s[start:end]
+		go sum(part, ch)
+	}
+	var total int64
+	for i := 0; i < numCpu; i++ {
+		total += <-ch
+	}
+	fmt.Printf("With Channel Add, Sum: %d,  Time Taken: %s\n", total, time.Since(t))
 }
 
 func calculateSumOfNumbers(max int) {
