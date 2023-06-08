@@ -19,9 +19,11 @@ func main() {
 }
 
 func getMessage(ch chan string) {
+	defer close(ch)
 	for i := 1; i <= 5; i++ {
 		ch <- time.Now().String()
 		time.Sleep(time.Millisecond * 500)
 	}
-	close(ch)
+
+	time.Sleep(time.Second * 5)
 }
